@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="difficulty_analyzer_gui.ChartControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:difficulty_analyzer_gui"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="600">
+    <Grid SizeChanged="Grid_SizeChanged" MouseWheel="Grid_MouseWheel" Background="White" MouseMove="Grid_MouseMove">
+        <Canvas x:Name="CanvasUI" ClipToBounds="True" >
+            <Rectangle x:Name="BlockInfoLine" Canvas.Bottom="24" Width="2" Height="100" Canvas.Left="5" Fill="#FFB4B4B4"/>
+            <Border x:Name="BlockInfo" BorderThickness="1" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="128" Canvas.Bottom="2" CornerRadius="10" Background="#FF8C8C8C" MouseDown="BlockInfo_MouseDown" MouseEnter="BlockInfo_MouseEnter" MouseLeave="BlockInfo_MouseLeave">
+                <Label x:Name="BlockInfoText" Content="" VerticalContentAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" Margin="0,-10,0,-10" FontSize="10" IsHitTestVisible="False"/>
+            </Border>
+        </Canvas>
+        <Border BorderBrush="#FF464646" Margin="0,0,0,24" BorderThickness="0,0,0,1" >
+            <Canvas x:Name="CanvasData" ClipToBounds="True"/>
+        </Border>
+    </Grid>
+</UserControl>

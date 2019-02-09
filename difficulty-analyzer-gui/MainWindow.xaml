@@ -1,0 +1,23 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:difficulty_analyzer_gui"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="difficulty_analyzer_gui.MainWindow"
+        mc:Ignorable="d"
+        Title="Difficulty Analyzer GUI" Height="400" Width="854" MinWidth="590" MinHeight="200">
+    <Grid>
+        <Button Content="Open" HorizontalAlignment="Left" Margin="10,0,0,10.4" VerticalAlignment="Bottom" Width="75" Height="24" Click="Button_Click"/>
+        <Grid x:Name="MainPanel" IsEnabled="False">
+            <Border BorderBrush="#FFB4B4B4" BorderThickness="1" Margin="10,10,9.6,44">
+                <local:ChartControl x:Name="Chart"/>
+            </Border>
+            <ComboBox x:Name="ComboBoxSkills" Margin="0,0,10,10.4" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="120" SelectedIndex="0" VerticalContentAlignment="Center" SelectionChanged="ComboBoxSkills_SelectionChanged">
+                <System:String>Aim</System:String>
+                <System:String>Speed</System:String>
+            </ComboBox>
+            <Label x:Name="TextInfo" Content="" Margin="90,0,135,8.4" VerticalAlignment="Bottom" Height="28" VerticalContentAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>
