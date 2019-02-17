@@ -228,10 +228,10 @@ namespace difficulty_analyzer_gui.GLChartControl
         private const float _i = 5f;
         private void Render(float delta)
         {
-            _iChartScale += (ChartScale - _iChartScale) / _i * (delta / (1000f / 144f));
-            _iChartOffset += (ChartOffset - _iChartOffset) / _i * (delta / (1000f / 144f));
-            _iInfoAlpha += (InfoAlpha - _iInfoAlpha) / _i * (delta / (1000f / 144f));
-            _iInfoBackgroundRGB += (InfoBackgroundRGB - _iInfoBackgroundRGB) / _i * (delta / (1000f / 144f));
+            _iChartScale += (ChartScale - _iChartScale) / _i * Math.Min(delta / (1000f / 144f), _i);
+            _iChartOffset += (ChartOffset - _iChartOffset) / _i * Math.Min(delta / (1000f / 144f), _i);
+            _iInfoAlpha += (InfoAlpha - _iInfoAlpha) / _i * Math.Min(delta / (1000f / 144f), _i);
+            _iInfoBackgroundRGB += (InfoBackgroundRGB - _iInfoBackgroundRGB) / _i * Math.Min(delta / (1000f / 144f), _i);
 
             GL.ClearColor(Color4.White);
             GL.Clear(ClearBufferMask.ColorBufferBit);
