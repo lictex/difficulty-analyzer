@@ -42,6 +42,8 @@ namespace difficulty_analyzer_gui.GLChartControl
             get => _chartScale; set
             {
                 _chartScale = value < 1 ? 1 : value;
+
+                if (Data != null && _chartScale > Data.Count) _chartScale = Data.Count;
             }
         }
 
