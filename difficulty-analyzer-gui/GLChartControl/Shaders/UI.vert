@@ -7,6 +7,7 @@ layout(location = 2) in vec2 texcoord;
 out vec4 fcolor;
 out vec2 ftexcoord;
 out vec2 fcoord;
+out vec2 fsize;
 
 out vec4 gcolor;
 out vec2 gtexcoord;
@@ -39,6 +40,7 @@ void main()
 	gl_Position = vec4(vertexCoord, 1.0) * transform;
 	fcolor = vertexColor;
 	ftexcoord = texcoord;
+	fsize = vec2(width, height);
 
 	gcolor = fcolor;
 	gcoord = fcoord;
