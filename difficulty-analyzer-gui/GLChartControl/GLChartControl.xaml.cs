@@ -53,7 +53,7 @@ namespace difficulty_analyzer_gui.GLChartControl
             get => _chartOffset; set
             {
                 _chartOffset = value > 0 ? 0 : value;
-                if (ChartScale * ActualWidth + _chartOffset < ActualWidth) _chartOffset = (float)((1 - ChartScale) * ActualWidth);
+                if (ChartScale * viewportInfo.ScaledWidth + _chartOffset < viewportInfo.ScaledWidth) _chartOffset = (float)((1 - ChartScale) * viewportInfo.ScaledWidth);
             }
         }
 
@@ -63,6 +63,7 @@ namespace difficulty_analyzer_gui.GLChartControl
         public GLChartControl()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
 
             GLControl = new OpenTK.GLControl();
             wHost.Child = GLControl;
@@ -95,6 +96,7 @@ namespace difficulty_analyzer_gui.GLChartControl
         private ViewportInfo viewportInfo;
         private void GLControl_Resize(object sender, EventArgs e)
         {
+            var p = viewportInfo.IsValid ? ((float)GLControl.Width / viewportInfo.Width) : 1;
             var source = System.Windows.PresentationSource.FromVisual(this);
             if (source != null)
             {
@@ -103,7 +105,9 @@ namespace difficulty_analyzer_gui.GLChartControl
                 viewportInfo.ScaleX = (float)source.CompositionTarget.TransformToDevice.M11;
                 viewportInfo.ScaleY = (float)source.CompositionTarget.TransformToDevice.M22;
             }
-
+            ChartOffset *= p;
+            Thread.MemoryBarrier();
+            _iChartOffset = ChartOffset;
         }
 
         private double mousePosX, mousePosY;
@@ -123,7 +127,7 @@ namespace difficulty_analyzer_gui.GLChartControl
             var n = GetDataIndex((float)mousePosX);
             var ts = new TimeSpan(((long)n * SectionLength + StartTime) * 10000);
             _lastTime = string.Format("{0}:{1}:{2}", Math.Floor(ts.TotalMinutes), ts.Seconds.ToString().PadLeft(2, '0'), ts.Milliseconds.ToString().PadLeft(3, '0'));
-            _lastMouseData = Data == null ? 0 : Data[n];
+            _lastMouseData = Data == null ? 0 : Data[n.Clamp(0, Data.Count - 1)];
         }
 
         private void GLControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -225,7 +229,7 @@ namespace difficulty_analyzer_gui.GLChartControl
         private float _iChartOffset = 1;
         private float _iInfoAlpha = 0;
         private float _iInfoBackgroundRGB = 140 / 255f;
-        private const float _i = 5f;
+        private const float _i = 6f;
         private void Render(float delta)
         {
             _iChartScale += (ChartScale - _iChartScale) / _i * Math.Min(delta / (1000f / 144f), _i);

@@ -30,7 +30,7 @@ namespace difficulty_analyzer_gui
         {
             MainPanel.IsEnabled = false;
             Chart.Data = null;
-            ComboBoxSkills.SelectedIndex = 0;
+            ComboBoxSkills.SelectedIndex = (int)Skill.Overall;
         }
 
         private void LoadBeatmap(string path)
@@ -63,7 +63,7 @@ namespace difficulty_analyzer_gui
                     JSONData["maxCombo"].Value<double>().ToString()
                 )));
 
-                Dispatcher.Invoke(() => SetChartData(Skill.Aim));
+                Dispatcher.Invoke(() => SetChartData(Skill.Overall, CheckboxFilter.IsChecked == true));
 
                 Dispatcher.Invoke(() => MainPanel.IsEnabled = true);
             }
@@ -73,30 +73,62 @@ namespace difficulty_analyzer_gui
             }
         }
 
-        private void SetChartData(Skill l)
+        private void SetChartData(Skill l, bool filter)
         {
             if (JSONData == null)
             {
                 Chart.Data = null;
                 return;
             }
-            switch (l)
-            {
-                case Skill.Aim: Chart.Data = JSONData["skills"]["aim"]["data"].Values<double>().ToList(); break;
-                case Skill.Speed: Chart.Data = JSONData["skills"]["speed"]["data"].Values<double>().ToList(); break;
-            }
+            if (filter) switch (l)
+                {
+                    case Skill.Aim:
+                        var s = JSONData["skills"]["aim"]["data"].Values<double>().ToList();
+                        Chart.Data = s.Zip(GetOrder(s), (a, b) => a * Math.Pow(0.9, b)).ToList(); break;
+                    case Skill.Speed:
+                        var t = JSONData["skills"]["speed"]["data"].Values<double>().ToList();
+                        Chart.Data = t.Zip(GetOrder(t), (a, b) => a * Math.Pow(0.9, b)).ToList(); break;
+                    case Skill.Overall:
+                        var p = JSONData["skills"]["aim"]["data"].Values<double>().ToList();
+                        p = p.Zip(GetOrder(p), (a, b) => a * Math.Pow(0.9, b)).ToList();
+                        var q = JSONData["skills"]["speed"]["data"].Values<double>().ToList();
+                        q = q.Zip(GetOrder(q), (a, b) => a * Math.Pow(0.9, b)).ToList();
+                        Chart.Data = p.Zip(q, (x, y) => x + y).ToList();
+                        break;
+
+                }
+            else switch (l)
+                {
+                    case Skill.Aim: Chart.Data = JSONData["skills"]["aim"]["data"].Values<double>().ToList(); break;
+                    case Skill.Speed: Chart.Data = JSONData["skills"]["speed"]["data"].Values<double>().ToList(); break;
+                    case Skill.Overall: Chart.Data = JSONData["skills"]["aim"]["data"].Values<double>().Zip(JSONData["skills"]["speed"]["data"].Values<double>(), (p, q) => p + q).ToList(); break;
+
+                }
             Chart.SectionLength = JSONData["skills"]["sectionLength"].Value<int>();
             Chart.StartTime = JSONData["skills"]["startTime"].Value<int>();
         }
 
         private void Info(string s) => TextInfo.Content = s;
 
-        private void ComboBoxSkills_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => SetChartData((Skill)ComboBoxSkills.SelectedIndex);
+        private void CheckBox_Checked(object sender, RoutedEventArgs e) => SetChartData((Skill)ComboBoxSkills.SelectedIndex, CheckboxFilter.IsChecked == true);
+
+        private void ComboBoxSkills_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => SetChartData((Skill)ComboBoxSkills.SelectedIndex, CheckboxFilter.IsChecked == true);
 
         private enum Skill
         {
             Aim = 0,
-            Speed = 1
+            Speed = 1,
+            Overall = 2
+        }
+
+        public static int[] GetOrder<T>(List<T> list) where T : IComparable
+        {
+            var sorted = new List<T>(list); sorted.Sort((a, b) => b.CompareTo(a));
+            var result = new int[list.Count];
+            for (int i = 0; i < list.Count; i++)
+                for (int x = 0; x < list.Count; x++)
+                    if (list[x].CompareTo(sorted[i]) == 0) result[x] = i;
+            return result;
         }
     }
 }

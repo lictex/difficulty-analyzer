@@ -48,6 +48,8 @@ namespace difficulty_analyzer_gui.GLChartControl
 
             public float ScaledWidth { get => Width / ScaleX; }
             public float ScaledHeight { get => Height / ScaleY; }
+
+            public bool IsValid => Width != 0 && Height != 0;
         }
 
         public class ShaderProgram
