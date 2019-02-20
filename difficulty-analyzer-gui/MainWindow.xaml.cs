@@ -30,7 +30,7 @@ namespace difficulty_analyzer_gui
         {
             MainPanel.IsEnabled = false;
             Chart.Data = null;
-            ComboBoxSkills.SelectedIndex = (int)Skill.Overall;
+            ComboBoxSkills.SelectedIndex = (int)Skill.Aim;
         }
 
         private void LoadBeatmap(string path)
@@ -63,7 +63,7 @@ namespace difficulty_analyzer_gui
                     JSONData["maxCombo"].Value<double>().ToString()
                 )));
 
-                Dispatcher.Invoke(() => SetChartData(Skill.Overall, CheckboxFilter.IsChecked == true));
+                Dispatcher.Invoke(() => SetChartData(Skill.Aim, CheckboxFilter.IsChecked == true));
 
                 Dispatcher.Invoke(() => MainPanel.IsEnabled = true);
             }
