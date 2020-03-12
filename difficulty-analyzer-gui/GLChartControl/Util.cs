@@ -77,8 +77,9 @@ namespace difficulty_analyzer_gui.GLChartControl
 
             public ViewportInfo CurrentViewport { get; private set; }
 
-            public ShaderProgram WithViewport(ViewportInfo viewportSize)
+            public ShaderProgram UseWithViewport(ViewportInfo viewportSize)
             {
+                GL.UseProgram(this);
                 CurrentViewport = viewportSize;
                 GL.Uniform1(this["viewportWidth"], viewportSize.Width);
                 GL.Uniform1(this["viewportHeight"], viewportSize.Height);

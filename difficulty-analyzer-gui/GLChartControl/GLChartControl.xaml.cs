@@ -242,15 +242,15 @@ namespace difficulty_analyzer_gui.GLChartControl
             GL.Viewport(viewportInfo.X, viewportInfo.Y, viewportInfo.Width, viewportInfo.Height);
 
             var lX = mousePosX.Clamp(64 + 2, viewportInfo.ScaledWidth - 64 - 2);
-            GL.UseProgram(uiShader.WithViewport(viewportInfo));
+            uiShader.UseWithViewport(viewportInfo);
             Rect.Instance.Draw(uiShader, (float)mousePosX, 0, 3f, viewportInfo.ScaledHeight - 24f, new Color4(180 / 255f, 180 / 255f, 180 / 255f, _iInfoAlpha), Origin.TopCenter);
             Rect.Instance.Draw(uiShader, 0, viewportInfo.ScaledHeight - 24f, viewportInfo.ScaledWidth, 2f, new Color4(70 / 255f, 70 / 255f, 70 / 255f, 1f), Origin.BottomLeft);
             Rect.Instance.Draw(uiShader, (float)lX, viewportInfo.ScaledHeight - 10f - 2f, 128f, 20f, new Color4(_iInfoBackgroundRGB, _iInfoBackgroundRGB, _iInfoBackgroundRGB, _iInfoAlpha), Origin.Center, 10);
 
-            GL.UseProgram(uiTexturedShader.WithViewport(viewportInfo));
+            uiTexturedShader.UseWithViewport(viewportInfo);
             BitmapFont.Default.DrawText(uiTexturedShader, string.Format("{0} - {1}", _lastTime, Math.Round(_lastMouseData, 2, MidpointRounding.AwayFromZero).ToString("00.00")), (float)lX, viewportInfo.ScaledHeight - 8.5f - 2f, 17, new Color4(1f, 1f, 1f, _iInfoAlpha));
 
-            GL.UseProgram(chartShader.WithViewport(viewportInfo));
+            chartShader.UseWithViewport(viewportInfo);
             GL.Uniform4(chartShader["color"], new Color4(70, 70, 70, 255));
             GL.Uniform1(chartShader["radius"], 0);
             GL.Uniform1(chartShader["width"], viewportInfo.ScaledWidth * _iChartScale);

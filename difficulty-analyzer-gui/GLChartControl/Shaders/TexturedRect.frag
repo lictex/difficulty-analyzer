@@ -16,8 +16,8 @@ void main()
     fragColor = texture(colortex, ftexcoord) * fcolor * color;
 
 	vec2 m = vec2(min(fcoord.x, fsize.x - fcoord.x), min(fcoord.y, fsize.y - fcoord.y));
-	if(m.x < radius && m.y < radius) 
-		fragColor.a *= clamp(0, 1, radius - length(vec2(radius) - m));
-	else 
-		fragColor.a *= clamp(0, 1, min(m.x, m.y));
+	if(m.x < radius && m.y < radius)
+		fragColor.a *= clamp(radius - length(vec2(radius) - m), 0, 1);
+	else
+		fragColor.a *= clamp(min(m.x, m.y), 0, 1);
 }
